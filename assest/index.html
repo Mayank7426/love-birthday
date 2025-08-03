@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Birthday Wish with Gallery</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      background: #fff0f6;
+    }
+
+    body {
+      background-image: url(https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUydzdqeXB5Y2trc2QwMGp0Y2poYnB6d2IzZmsxbnV6dHRhaWNjYWx6MiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o6gbeVN2ZPbG2COKA/source.gif);
+      background-repeat: no-repeat;
+      background-size: cover;
+      /* filter: blur(4px); */
+    }
+
+    #startScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://68.media.tumblr.com/930dac1b08816ea2c0adc85da5bdef5f/tumblr_oo7mzzPIg91w9jl95o1_500.gif') no-repeat center center fixed;
+      background-size: cover;
+      filter: blur(6px);
+      z-index: 10;
+    }
+
+    #startContent h1 {
+      color: lightpink;
+      font-size: 20px;
+      font-weight: 400;
+      font-family: cursive;
+      margin-bottom: 12px;
+    }
+
+    #startContent {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 20;
+      width: 320px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    #kittyGif {
+      width: 200px;
+      border-radius: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 20px rgba(255, 192, 203, 0.7);
+    }
+
+    #startBtn {
+      background-color: #ff1493;
+      border: none;
+      color: white;
+      padding: 10px 37px;
+      font-size: 22px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 8px 15px rgba(255, 20, 147, 0.6);
+      font-family: cursive;
+    }
+
+    #startBtn:hover {
+      background-color: #e6007e;
+    }
+
+    #envelopeContainer {
+      text-align: center;
+      margin: 100px auto 40px;
+      display: none;
+    }
+
+    #envelope {
+      width: 200px;
+      height: 133px;
+      margin: 0 auto;
+      background: #fff;
+      border: 3px solid #ff1493;
+      border-radius: 18px;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(255, 20, 147, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    #envelope::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: linear-gradient(135deg, #ff69b4 50%, transparent 50%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-radius: 18px 18px 0 0;
+    }
+
+    #helloMsg {
+      font-size: 22px;
+      font-weight: 600;
+      color: #d81b60;
+      user-select: text;
+      cursor: text;
+      text-align: center;
+      width: 100%;
+      margin-bottom: -21px;
+      font-family: auto;
+    }
+
+    #seeMoreBtn {
+      display: none;
+      margin: 20px auto 0;
+      padding: 12px 40px;
+      font-size: 18px;
+      background-color: #ff4081;
+      border: none;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 64, 129, 0.7);
+      font-family: cursive;
+    }
+
+    #seeMoreBtn:hover {
+      background-color: #e6007e;
+    }
+
+    #wishesBox {
+      margin: 40px auto;
+      max-width: 340px;
+      background: #ffecf4;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(255, 20, 147, 0.3);
+      padding: 30px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: none;
+    }
+
+    #wishesBox.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    #wishesBox img {
+      max-width: 130px;
+      margin-bottom: 20px;
+      border-radius: 20px;
+    }
+
+    #wishesBox h2 {
+      font-size: 28px;
+      color: #d81b60;
+      margin-bottom: 15px;
+      font-family: cursive;
+    }
+
+    #wishesBox p {
+      font-size: 18px;
+      color: #880e4f;
+      line-height: 1.4;
+      font-family: cursive;
+    }
+
+    #finalMessage {
+      text-align: center;
+      max-width: 400px;
+      margin: 30px auto 10px;
+      padding: 20px;
+      border-radius: 15px;
+      background: #ffe4f0;
+      box-shadow: 0 10px 20px rgba(255, 20, 147, 0.3);
+      display: none;
+    }
+
+    #finalText {
+      font-size: 22px;
+      font-weight: 600;
+      color: #d81b60;
+      cursor: text;
+      margin-bottom: 20px;
+      user-select: text;
+      outline: none;
+      min-height: 40px;
+      font-family: auto;
+    }
+
+    #galleryBtn {
+      padding: 12px 30px;
+      font-size: 18px;
+      border-radius: 25px;
+      background-color: #ff1493;
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 20, 147, 0.7);
+      transition: background-color 0.3s ease;
+      font-family: emoji;
+    }
+
+    #galleryBtn:hover {
+      background-color: #e6007e;
+    }
+
+    #photoGallery {
+      max-width: 420px;
+      margin: 10px auto 30px;
+      display: none;
+      padding: 15px;
+      background: #fff0f6;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(255, 20, 147, 0.2);
+      animation: fadeInScale 0.5s ease forwards;
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    #galleryImages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    #galleryImages img {
+      width: 112px;
+      height: 190px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(255, 20, 147, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    #galleryImages img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(255, 20, 147, 0.6);
+    }
+
+    #hideGalleryBtn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 12px 40px;
+      font-size: 18px;
+      background-color: #ff4081;
+      border: none;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 64, 129, 0.7);
+      transition: background-color 0.3s ease;
+    }
+
+    #hideGalleryBtn:hover {
+      background-color: #e6007e;
+    }
+
+    /* Back button style */
+    .backBtn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 30px;
+      font-size: 16px;
+      background-color: #d81b60;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: cursive;
+      box-shadow: 0 6px 12px rgba(216, 27, 96, 0.5);
+      transition: background-color 0.3s ease;
+    }
+
+    .backBtn:hover {
+      background-color: #ad1457;
+    }
+
+    @media (max-width: 480px) {
+
+      #startContent,
+      #envelope,
+      #wishesBox,
+      #finalMessage,
+      #photoGallery {
+        width: 90%;
+        padding: 20px;
+      }
+
+      #startContent h1 {
+        font-size: 1.4rem;
+      }
+
+      #kittyGif {
+        width: 150px;
+        margin-bottom: 15px;
+      }
+
+      #startBtn,
+      #seeMoreBtn,
+      #galleryBtn,
+      #hideGalleryBtn,
+      .backBtn {
+        font-size: 1rem;
+        padding: 8px 25px;
+      }
+
+      #helloMsg {
+        font-size: 1.2rem;
+      }
+
+      #wishesBox h2 {
+        font-size: 1.8rem;
+      }
+
+      #wishesBox p,
+      #finalText {
+        font-size: 1rem;
+      }
+
+      #wishesBox img {
+        max-width: 90px;
+        margin-bottom: 15px;
+      }
+
+      #galleryImages img {
+        width: 45%;
+        height: auto;
+      }
+    }
+    /* #startContent {
+  width: 90%;
+  max-width: 340px;
+}
+#envelope {
+  width: 90%;
+  max-width: 240px;
+}
+#wishesBox, #finalMessage, #photoGallery {
+  width: 90%;
+  max-width: 360px;
+} */
+
+
+    /* Medium phones to small tablets: 481px–720px */
+    @media (min-width: 481px) and (max-width: 720px) {
+
+      #startContent,
+      #envelope,
+      #wishesBox,
+      #finalMessage,
+      #photoGallery {
+        width: 85%;
+        padding: 25px;
+      }
+
+      #startContent h1 {
+        font-size: 1.6rem;
+      }
+
+      #kittyGif {
+        width: 180px;
+      }
+
+      #startBtn,
+      #seeMoreBtn,
+      #galleryBtn,
+      #hideGalleryBtn,
+      .backBtn {
+        font-size: 1.1rem;
+        padding: 10px 30px;
+      }
+
+      #helloMsg {
+        font-size: 1.3rem;
+      }
+
+      #wishesBox h2 {
+        font-size: 2rem;
+      }
+
+      #wishesBox p,
+      #finalText {
+        font-size: 1.1rem;
+      }
+
+      #wishesBox img {
+        max-width: 110px;
+      }
+
+      #galleryImages img {
+        width: 100px;
+        height: auto;
+      }
+
+      #startContent {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 20;
+    width: 456px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 60px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+#startContent h1 {
+    color: lightpink;
+    font-size: 47px;
+    font-weight: 400;
+    font-family: cursive;
+    margin-bottom: 12px;
+}
+#kittyGif {
+    width: 335px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 20px rgba(255, 192, 203, 0.7);
+}
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="startScreen"></div>
+
+  <div id="startContent">
+    <h1>Happy Birthday🎂,<br> Meri Jaan 💖</h1>
+    <img id="kittyGif" src="https://i.pinimg.com/originals/61/66/5b/61665bb472cd6e7ce74c8aaf5fa182f0.gif"
+      alt="Cute Kitty" />
+    <button id="startBtn">Start</button>
+  </div>
+
+  <div id="envelopeContainer">
+    <div id="envelope">
+      <div id="helloMsg" contenteditable="true" title="Click to edit message">Hello Jaan! 💖</div>
+    </div>
+    <button id="seeMoreBtn">See More</button>
+    <button id="backFromEnvelope" class="backBtn">Back</button>
+  </div>
+
+  <div id="wishesBox">
+    <img
+      src="https://lovenamepix.com/images/full/today-is-your-day-cute-birthday-wishes-gif-for-girl-love-name-pix-6289.gif"
+      alt="Birthday Cake" />
+    <h2>Happy Birthday, My Love!</h2>
+    <p>
+      Tum meri zindagi ka sabse pyara hissa ho.<br />
+      Har din tumhara muskurana dekhna meri khushi hai. ❤️<br />
+      I love you endlessly. 💕
+    </p><br>
+    <p>Thanks to come in my life this day is my special day,
+      Your Birthday🎂 is as beautiful and full of Love <br>
+      That For you.Best Wishes, My Lifeline❤️<br>
+      Once Again Happy Birthday🎂 MY Love 💖, Mera Payara Sa Bacha
+    </p>
+    <button id="backFromWishes" class="backBtn">Back</button>
+  </div>
+
+  <div id="finalMessage">
+    <div id="finalText" contenteditable="true"></div>
+    <button id="galleryBtn">Open Photo Gallery</button>
+    <button id="backFromFinal" class="backBtn">Back</button>
+  </div>
+
+  <div id="photoGallery">
+    <div id="galleryImages">
+      <img src="pic1.jpg" />
+      <img src="pic2.jpg" />
+      <img src="pic3.jpg" />
+      <img src="pic4.jpg" />
+      <img src="pic5.jpg" />
+    </div>
+    <button id="hideGalleryBtn">Hide Gallery</button>
+    <button id="backFromGallery" class="backBtn">Back</button>
+  </div>
+
+  <!-- <audio id="bgMusic" loop>
+    <source src="https://actions.google.com/sounds/v1/holiday/birthday_song.ogg" type="audio/ogg">
+  </audio> -->
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      const startBtn = document.getElementById('startBtn');
+      const envelopeContainer = document.getElementById('envelopeContainer');
+      const seeMoreBtn = document.getElementById('seeMoreBtn');
+      const wishesBox = document.getElementById('wishesBox');
+      const startContent = document.getElementById('startContent');
+      const startScreen = document.getElementById('startScreen');
+      const bgMusic = document.getElementById('bgMusic');
+      const finalMessage = document.getElementById('finalMessage');
+      const helloMsg = document.getElementById('helloMsg');
+      const finalText = document.getElementById('finalText');
+      const galleryBtn = document.getElementById('galleryBtn');
+      const photoGallery = document.getElementById('photoGallery');
+      const hideGalleryBtn = document.getElementById('hideGalleryBtn');
+
+      // Start button
+      startBtn.addEventListener('click', () => {
+        startContent.style.display = 'none';
+        startScreen.style.display = 'none';
+        envelopeContainer.style.display = 'block';
+        seeMoreBtn.style.display = 'inline-block';
+
+        bgMusic.play().catch(() => {
+          alert("Please tap the screen to allow music playback.");
+        });
+      });
+
+      // See more
+      seeMoreBtn.addEventListener('click', () => {
+        wishesBox.classList.add('show');
+        seeMoreBtn.style.display = 'none';
+        envelopeContainer.style.display = 'none';
+
+        finalText.innerHTML = helloMsg.innerHTML;
+        finalMessage.style.display = 'block';
+      });
+
+      // Gallery
+      galleryBtn.addEventListener('click', () => {
+        photoGallery.style.display = 'block';
+        finalText.style.display = 'none';
+        galleryBtn.style.display = 'none';
+      });
+
+      hideGalleryBtn.addEventListener('click', () => {
+        photoGallery.style.display = 'none';
+        finalText.style.display = 'block';
+        galleryBtn.style.display = 'inline-block';
+      });
+
+      // Back Buttons
+      document.getElementById('backFromEnvelope').addEventListener('click', () => {
+        envelopeContainer.style.display = 'none';
+        seeMoreBtn.style.display = 'none';
+        startContent.style.display = 'block';
+        startScreen.style.display = 'block';
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+      });
+
+      document.getElementById('backFromWishes').addEventListener('click', () => {
+        wishesBox.classList.remove('show');
+        envelopeContainer.style.display = 'block';
+        seeMoreBtn.style.display = 'inline-block';
+        finalMessage.style.display = 'none';
+      });
+
+      document.getElementById('backFromFinal').addEventListener('click', () => {
+        finalMessage.style.display = 'none';
+        wishesBox.classList.add('show');
+        envelopeContainer.style.display = 'none';
+      });
+
+      document.getElementById('backFromGallery').addEventListener('click', () => {
+        photoGallery.style.display = 'none';
+        finalText.style.display = 'block';
+        galleryBtn.style.display = 'inline-block';
+      });
+    });
+  </script>
+
+</body>
+
+</html>
